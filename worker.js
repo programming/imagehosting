@@ -150,12 +150,10 @@ async function handleUpload(request, env) {
 
   return json({
     id,
-    url         : imageUrl,
+    url      : imageUrl,
     burnOnRead,
-    expiresAt   : new Date(meta.expiresAt).toISOString(),
-    sizeBytes   : bytes.byteLength,
-    uploadsToday: currentCount + 1,
-    dailyLimit  : UPLOAD_LIMIT_PER_DAY,
+    expiresAt: new Date(meta.expiresAt).toISOString(),
+    sizeBytes: bytes.byteLength,
   }, 201);
 }
 
