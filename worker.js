@@ -130,7 +130,6 @@ async function handleUpload(request, env) {
   const meta = {
     contentType : file.type,
     sizeBytes   : bytes.byteLength,
-    uploadedAt  : Date.now(),
     expiresAt   : Date.now() + TTL_MS,
     burnOnRead,
     burned      : false,
@@ -202,9 +201,10 @@ async function handleFetch(id, env) {
       "Content-Type"              : meta.contentType,
       "Content-Length"            : String(meta.sizeBytes),
       "Cache-Control"             : "no-store, no-cache, must-revalidate",
+      "Pragma"                    : "no-cache",
+      "Referrer-Policy"           : "no-referrer",
       "X-Burn-On-Read"            : String(meta.burnOnRead),
       "X-Expires-At"              : new Date(meta.expiresAt).toISOString(),
-      "Pragma"                    : "no-cache",
       ...CORS_HEADERS,
     },
   });
@@ -248,7 +248,7 @@ async function runCleanup(env) {
     cursor = result.list_complete ? undefined : result.cursor;
   } while (cursor);
 
-  console.log(`Cleanup complete: ${deleted} images deleted`);
+  // no logging — avoid writing request data to Cloudflare logs
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
