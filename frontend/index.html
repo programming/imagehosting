@@ -197,6 +197,85 @@
       color: #888;
       text-align: center;
     }
+
+    /* API section */
+    .api-section {
+      margin-top: 1.5rem;
+      width: 100%;
+      max-width: 480px;
+    }
+    .api-section h2 {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 1rem;
+    }
+    .api-base {
+      font-family: ui-monospace, monospace;
+      font-size: 0.78rem;
+      color: #555;
+      margin-bottom: 1.25rem;
+    }
+    .api-base span { color: #111; }
+    .snippet {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.75rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .snippet-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 0.5rem;
+    }
+    .snippet-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .snippet code {
+      flex: 1;
+      font-family: ui-monospace, monospace;
+      font-size: 0.78rem;
+      color: #111;
+      white-space: pre-wrap;
+      word-break: break-all;
+      line-height: 1.6;
+    }
+    .snippet-copy {
+      flex-shrink: 0;
+      background: #fff;
+      border: 1px solid #d0d0d0;
+      border-radius: 5px;
+      color: #555;
+      font-size: 0.72rem;
+      padding: 0.25rem 0.55rem;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      margin-top: 1px;
+    }
+    .snippet-copy:hover { background: #f0f0f0; border-color: #bbb; }
+    .api-note {
+      font-size: 0.78rem;
+      color: #999;
+      line-height: 1.6;
+      margin-top: 0.25rem;
+    }
+    .api-note code {
+      font-family: ui-monospace, monospace;
+      font-size: 0.76rem;
+      background: #f0f0f0;
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+      color: #333;
+    }
   </style>
 </head>
 <body>
@@ -236,6 +315,44 @@
   </div>
 
   <div id="quota-notice">Uploads are full for today &mdash; try again tomorrow.</div>
+
+  <div class="api-section">
+    <h2>API</h2>
+    <div class="api-base">Base URL &nbsp;<span>https://image-host.singapore.workers.dev</span></div>
+
+    <div class="snippet">
+      <div class="snippet-label">Check quota</div>
+      <div class="snippet-row">
+        <code>curl https://image-host.singapore.workers.dev/</code>
+        <button class="snippet-copy">Copy</button>
+      </div>
+    </div>
+
+    <div class="snippet">
+      <div class="snippet-label">Upload an image</div>
+      <div class="snippet-row">
+        <code>curl -X POST https://image-host.singapore.workers.dev/upload \
+  -F "file=@photo.jpg"</code>
+        <button class="snippet-copy">Copy</button>
+      </div>
+    </div>
+
+    <div class="snippet">
+      <div class="snippet-label">Upload &amp; burn after reading</div>
+      <div class="snippet-row">
+        <code>curl -X POST https://image-host.singapore.workers.dev/upload \
+  -F "file=@photo.jpg" \
+  -F "burn=true"</code>
+        <button class="snippet-copy">Copy</button>
+      </div>
+    </div>
+
+    <p class="api-note">
+      A successful upload returns JSON with a <code>url</code> field — open it in any browser to view the image.
+      Supported types: JPEG, PNG, GIF, WEBP &mdash; max 5 MB.
+      All images expire after <code>24h</code>; burned images are deleted on first view.
+    </p>
+  </div>
 
   <script>
     const API = "https://image-host.singapore.workers.dev";
@@ -346,6 +463,19 @@
     }
 
     refreshStatus();
+
+    // ── Snippet copy buttons ─────────────────────────────────────────────────
+
+    document.querySelectorAll(".snippet").forEach((snippet) => {
+      const btn  = snippet.querySelector(".snippet-copy");
+      const code = snippet.querySelector("code").textContent;
+      btn.addEventListener("click", () => {
+        navigator.clipboard.writeText(code).then(() => {
+          btn.textContent = "Copied!";
+          setTimeout(() => (btn.textContent = "Copy"), 1500);
+        });
+      });
+    });
 
     // ── Helpers ─────────────────────────────────────────────────────────────
 
