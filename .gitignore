@@ -1,0 +1,17 @@
+# Wrangler local state & cache
+.wrangler/
+
+# Local dev secrets (created by `wrangler secret put` locally or manually)
+.dev.vars
+.dev.vars.*
+
+# Environment / secret files
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+
+# OS
+.DS_Store
