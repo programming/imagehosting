@@ -1,0 +1,32 @@
+name       = "image-host"
+main       = "worker.js"
+compatibility_date = "2024-01-01"
+
+# ── KV namespace ──────────────────────────────────────────────────────────────
+# Create with: npx wrangler kv namespace create IMAGE_META
+[[kv_namespaces]]
+binding  = "IMAGE_META"
+id       = "d175c58813d3409b8e39c4a68b0ca0eb"
+
+# ── R2 bucket ─────────────────────────────────────────────────────────────────
+# Create with: npx wrangler r2 bucket create image-store
+[[r2_buckets]]
+binding    = "IMAGE_STORE"
+bucket_name = "image-store"
+
+# ── Cron trigger: cleanup runs every hour ────────────────────────────────────
+[triggers]
+crons = ["0 * * * *"]
+
+# ── Optional: restrict uploads to bearer token ───────────────────────────────
+# Set with: npx wrangler secret put UPLOAD_SECRET
+# Then send:  Authorization: Bearer <your-secret>
+# Leave unset to allow public uploads.
+#
+# [vars]
+# UPLOAD_SECRET = ""   ← do NOT put secrets here; use `wrangler secret put`
+
+# ── Custom domain (after adding to Cloudflare DNS) ───────────────────────────
+# [[routes]]
+# pattern = "img.yourdomain.com/*"
+# zone_name = "yourdomain.com"
