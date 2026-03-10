@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy &amp; Terms — ImageHost.ing</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f5f5f5;
+      color: #111;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem 2rem;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .back {
+      display: inline-block;
+      font-size: 0.82rem;
+      color: #888;
+      text-decoration: none;
+      margin-bottom: 2rem;
+    }
+    .back:hover { color: #111; }
+
+    h1 {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #111;
+      margin-bottom: 2rem;
+    }
+
+    h2 {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #999;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+    }
+    h2:first-of-type { margin-top: 0; }
+
+    p, li {
+      font-size: 0.88rem;
+      color: #444;
+      line-height: 1.7;
+    }
+
+    ul {
+      padding-left: 1.2rem;
+      margin-top: 0.4rem;
+    }
+    li { margin-bottom: 0.25rem; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #e8e8e8;
+      margin: 2rem 0;
+    }
+
+    .updated {
+      font-size: 0.75rem;
+      color: #bbb;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <a class="back" href="/">&larr; Back</a>
+
+  <div class="card">
+    <h1>Privacy &amp; Terms</h1>
+
+    <h2>Privacy Policy</h2>
+    <p>We collect as little data as possible.</p>
+
+    <h2>What we store</h2>
+    <ul>
+      <li>The image file you upload — held in Cloudflare R2 storage</li>
+      <li>Basic metadata: file type, file size, expiry time, and burn-after-reading flag</li>
+      <li>An anonymous daily upload counter used for rate limiting</li>
+    </ul>
+    <p>We do not store your IP address, browser, device, or any personal information.</p>
+
+    <h2>How long we keep it</h2>
+    <ul>
+      <li>All images are permanently deleted after <strong>24 hours</strong></li>
+      <li>Images with burn-after-reading enabled are deleted immediately on first view</li>
+      <li>No backups are kept</li>
+    </ul>
+
+    <h2>Third parties</h2>
+    <p>This service runs on <strong>Cloudflare's</strong> infrastructure. Cloudflare may process request metadata (such as IP addresses) as part of routing and DDoS protection, subject to <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">Cloudflare's privacy policy</a>. We have no access to this data and do not share it with anyone.</p>
+    <p style="margin-top:0.6rem;">No cookies are set. No analytics are collected. No third-party scripts are loaded.</p>
+
+    <hr class="divider" />
+
+    <h2>Terms of Service</h2>
+    <p>By using ImageHost.ing you agree to the following.</p>
+
+    <h2>Acceptable use</h2>
+    <p>You may not upload:</p>
+    <ul>
+      <li>Content that is illegal in your jurisdiction or ours</li>
+      <li>Child sexual abuse material (CSAM) — zero tolerance, will be reported</li>
+      <li>Content that violates another person's copyright or privacy</li>
+      <li>Malware, phishing material, or content designed to deceive</li>
+    </ul>
+
+    <h2>No guarantees</h2>
+    <ul>
+      <li>The service is provided <strong>as-is</strong> with no uptime guarantee</li>
+      <li>Do not use this service as your only copy of anything important</li>
+      <li>We may suspend access or remove content at any time without notice</li>
+    </ul>
+
+    <h2>Liability</h2>
+    <p>We are not liable for any loss or damage arising from your use of this service. You are responsible for the content you upload.</p>
+
+    <p class="updated">Last updated March 2026</p>
+  </div>
+</body>
+</html>
