@@ -52,7 +52,7 @@ export default {
 
     // GET / — simple status page
     if (method === "GET" && url.pathname === "/") {
-      return handleStatus(env);
+      return handleStatus();
     }
 
     return new Response("Not found", { status: 404, headers: CORS_HEADERS });
@@ -214,21 +214,12 @@ async function handleFetch(id, env) {
 
 // ─── Status page ─────────────────────────────────────────────────────────────
 
-async function handleStatus(env) {
-  const today      = utcDateString();
-  const counterRaw = await env.IMAGE_META.get(`counter:${today}`);
-  const count      = counterRaw ? parseInt(counterRaw, 10) : 0;
-  const remaining  = Math.max(0, UPLOAD_LIMIT_PER_DAY - count);
-
+async function handleStatus() {
   return json({
-    status          : "ok",
-    uploadsToday    : count,
-    uploadsRemaining: remaining,
-    dailyLimit      : UPLOAD_LIMIT_PER_DAY,
-    resetsAt        : nextMidnightUTC(),
-    maxFileSizeMB   : MAX_FILE_SIZE_BYTES / 1_048_576,
-    allowedTypes    : [...ALLOWED_TYPES],
-    ttlHours        : TTL_MS / 3_600_000,
+    status      : "ok",
+    maxFileSizeMB: MAX_FILE_SIZE_BYTES / 1_048_576,
+    allowedTypes : [...ALLOWED_TYPES],
+    ttlHours     : TTL_MS / 3_600_000,
   });
 }
 

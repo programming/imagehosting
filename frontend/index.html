@@ -417,6 +417,12 @@
         const res  = await fetch(`${API}/upload`, { method: "POST", body: form });
         const data = await res.json();
 
+        if (res.status === 429) {
+          quotaExhausted = true;
+          uploadBtn.disabled = true;
+          quotaNotice.style.display = "block";
+          return;
+        }
         if (!res.ok) {
           showError(data.error || `Upload failed (${res.status})`);
           return;
@@ -429,7 +435,6 @@
           `${(data.sizeBytes / 1024).toFixed(1)} KB · ` +
           (data.burnOnRead ? "burns on first view" : "persists 24 h");
         result.style.display = "block";
-        refreshStatus();
 
       } catch (err) {
         showError("Network error — is the worker reachable?");
@@ -447,22 +452,6 @@
         setTimeout(() => (copyBtn.textContent = "Copy"), 1500);
       });
     });
-
-    // ── Quota check ─────────────────────────────────────────────────────────
-
-    async function refreshStatus() {
-      try {
-        const res  = await fetch(`${API}/`);
-        const data = await res.json();
-        if (data.uploadsRemaining === 0) {
-          quotaExhausted = true;
-          uploadBtn.disabled = true;
-          quotaNotice.style.display = "block";
-        }
-      } catch { /* silent — don't block the UI */ }
-    }
-
-    refreshStatus();
 
     // ── Snippet copy buttons ─────────────────────────────────────────────────
 
