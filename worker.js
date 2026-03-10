@@ -23,10 +23,21 @@ const ALLOWED_TYPES        = new Set(["image/jpeg", "image/png", "image/gif", "i
 
 // ─── Router ──────────────────────────────────────────────────────────────────
 
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin" : "*",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
 export default {
   async fetch(request, env) {
     const url    = new URL(request.url);
     const method = request.method;
+
+    // CORS preflight
+    if (method === "OPTIONS") {
+      return new Response(null, { status: 204, headers: CORS_HEADERS });
+    }
 
     // POST /upload
     if (method === "POST" && url.pathname === "/upload") {
@@ -44,7 +55,7 @@ export default {
       return handleStatus(env);
     }
 
-    return new Response("Not found", { status: 404 });
+    return new Response("Not found", { status: 404, headers: CORS_HEADERS });
   },
 
   // Cron trigger: runs every hour to delete expired images
@@ -195,8 +206,8 @@ async function handleFetch(id, env) {
       "Cache-Control"             : "no-store, no-cache, must-revalidate",
       "X-Burn-On-Read"            : String(meta.burnOnRead),
       "X-Expires-At"              : new Date(meta.expiresAt).toISOString(),
-      // Prevent the browser from caching burned images
       "Pragma"                    : "no-cache",
+      ...CORS_HEADERS,
     },
   });
 }
@@ -263,7 +274,7 @@ async function deleteImage(id, env) {
 function json(data, status = 200) {
   return new Response(JSON.stringify(data, null, 2), {
     status,
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...CORS_HEADERS },
   });
 }
 

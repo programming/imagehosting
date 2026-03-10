@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Host</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0f0f0f;
+      color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .card {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    h1 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #fff;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Drop zone */
+    #drop-zone {
+      border: 2px dashed #333;
+      border-radius: 8px;
+      padding: 2.5rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      position: relative;
+    }
+    #drop-zone:hover, #drop-zone.drag-over {
+      border-color: #555;
+      background: #222;
+    }
+    #drop-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+    #drop-zone .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    #drop-zone .hint { font-size: 0.85rem; color: #555; margin-top: 0.25rem; }
+
+    #preview {
+      display: none;
+      width: 100%;
+      max-height: 200px;
+      object-fit: contain;
+      border-radius: 6px;
+      margin-top: 1rem;
+    }
+    #file-name {
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 0.5rem;
+      word-break: break-all;
+    }
+
+    /* Options */
+    .options {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-top: 1.25rem;
+    }
+    .options label {
+      font-size: 0.9rem;
+      color: #aaa;
+      cursor: pointer;
+      user-select: none;
+    }
+    .options input[type="checkbox"] {
+      accent-color: #e0e0e0;
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+    }
+    .options .desc {
+      font-size: 0.75rem;
+      color: #555;
+      margin-left: auto;
+    }
+
+    /* Upload button */
+    #upload-btn {
+      margin-top: 1.25rem;
+      width: 100%;
+      padding: 0.75rem;
+      background: #fff;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    #upload-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    #upload-btn:not(:disabled):hover { opacity: 0.85; }
+
+    /* Result */
+    #result {
+      display: none;
+      margin-top: 1.25rem;
+      background: #111;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+    }
+    #result .label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #555;
+      margin-bottom: 0.4rem;
+    }
+    .url-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    #result-url {
+      flex: 1;
+      font-size: 0.8rem;
+      color: #ccc;
+      word-break: break-all;
+      text-decoration: none;
+    }
+    #result-url:hover { color: #fff; text-decoration: underline; }
+    #copy-btn {
+      flex-shrink: 0;
+      background: #2a2a2a;
+      border: none;
+      border-radius: 5px;
+      color: #aaa;
+      font-size: 0.75rem;
+      padding: 0.3rem 0.6rem;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    #copy-btn:hover { background: #333; color: #fff; }
+    #result .meta {
+      font-size: 0.75rem;
+      color: #555;
+      margin-top: 0.4rem;
+    }
+
+    /* Error */
+    #error {
+      display: none;
+      margin-top: 1rem;
+      font-size: 0.82rem;
+      color: #e05555;
+      background: #1f1010;
+      border: 1px solid #3a1a1a;
+      border-radius: 6px;
+      padding: 0.6rem 0.8rem;
+    }
+
+    /* Status bar */
+    #status-bar {
+      margin-top: 1.5rem;
+      font-size: 0.75rem;
+      color: #444;
+      text-align: center;
+    }
+    #status-bar span { color: #666; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Image Host</h1>
+
+    <div id="drop-zone">
+      <input type="file" id="file-input" accept="image/jpeg,image/png,image/gif,image/webp" />
+      <div class="icon">&#x1F4F7;</div>
+      <div>Drop image here or click to browse</div>
+      <div class="hint">JPEG, PNG, GIF, WEBP &mdash; max 5 MB</div>
+    </div>
+
+    <img id="preview" alt="preview" />
+    <div id="file-name"></div>
+
+    <div class="options">
+      <input type="checkbox" id="burn-toggle" />
+      <label for="burn-toggle">Burn after reading</label>
+      <span class="desc">deletes on first view</span>
+    </div>
+
+    <button id="upload-btn" disabled>Upload</button>
+
+    <div id="error"></div>
+
+    <div id="result">
+      <div class="label">Your link</div>
+      <div class="url-row">
+        <a id="result-url" href="#" target="_blank" rel="noopener"></a>
+        <button id="copy-btn">Copy</button>
+      </div>
+      <div class="meta" id="result-meta"></div>
+    </div>
+  </div>
+
+  <div id="status-bar">Loading quota&hellip;</div>
+
+  <script>
+    const API = "https://image-host.singapore.workers.dev";
+
+    const dropZone   = document.getElementById("drop-zone");
+    const fileInput  = document.getElementById("file-input");
+    const preview    = document.getElementById("preview");
+    const fileName   = document.getElementById("file-name");
+    const burnToggle = document.getElementById("burn-toggle");
+    const uploadBtn  = document.getElementById("upload-btn");
+    const errorBox   = document.getElementById("error");
+    const result     = document.getElementById("result");
+    const resultUrl  = document.getElementById("result-url");
+    const copyBtn    = document.getElementById("copy-btn");
+    const resultMeta = document.getElementById("result-meta");
+    const statusBar  = document.getElementById("status-bar");
+
+    let selectedFile = null;
+
+    // ── File selection ──────────────────────────────────────────────────────
+
+    fileInput.addEventListener("change", () => handleFile(fileInput.files[0]));
+
+    dropZone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropZone.classList.add("drag-over");
+    });
+    dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag-over"));
+    dropZone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropZone.classList.remove("drag-over");
+      handleFile(e.dataTransfer.files[0]);
+    });
+
+    function handleFile(file) {
+      if (!file) return;
+      selectedFile = file;
+      fileName.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+      preview.src = URL.createObjectURL(file);
+      preview.style.display = "block";
+      uploadBtn.disabled = false;
+      hideError();
+      result.style.display = "none";
+    }
+
+    // ── Upload ──────────────────────────────────────────────────────────────
+
+    uploadBtn.addEventListener("click", async () => {
+      if (!selectedFile) return;
+
+      uploadBtn.disabled = true;
+      uploadBtn.textContent = "Uploading…";
+      hideError();
+      result.style.display = "none";
+
+      try {
+        const form = new FormData();
+        form.append("file", selectedFile);
+        if (burnToggle.checked) form.append("burn", "true");
+
+        const res  = await fetch(`${API}/upload`, { method: "POST", body: form });
+        const data = await res.json();
+
+        if (!res.ok) {
+          showError(data.error || `Upload failed (${res.status})`);
+          return;
+        }
+
+        resultUrl.href        = data.url;
+        resultUrl.textContent = data.url;
+        resultMeta.textContent =
+          `Expires ${new Date(data.expiresAt).toLocaleString()} · ` +
+          `${(data.sizeBytes / 1024).toFixed(1)} KB · ` +
+          (data.burnOnRead ? "burns on first view" : "persists 24 h");
+        result.style.display = "block";
+        refreshStatus();
+
+      } catch (err) {
+        showError("Network error — is the worker reachable?");
+      } finally {
+        uploadBtn.disabled = false;
+        uploadBtn.textContent = "Upload";
+      }
+    });
+
+    // ── Copy ────────────────────────────────────────────────────────────────
+
+    copyBtn.addEventListener("click", () => {
+      navigator.clipboard.writeText(resultUrl.href).then(() => {
+        copyBtn.textContent = "Copied!";
+        setTimeout(() => (copyBtn.textContent = "Copy"), 1500);
+      });
+    });
+
+    // ── Status bar ──────────────────────────────────────────────────────────
+
+    async function refreshStatus() {
+      try {
+        const res  = await fetch(`${API}/`);
+        const data = await res.json();
+        statusBar.innerHTML =
+          `<span>${data.uploadsRemaining}</span> of <span>${data.dailyLimit}</span> uploads remaining today &mdash; resets at midnight UTC`;
+      } catch {
+        statusBar.textContent = "Could not load quota";
+      }
+    }
+
+    refreshStatus();
+
+    // ── Helpers ─────────────────────────────────────────────────────────────
+
+    function showError(msg) { errorBox.textContent = msg; errorBox.style.display = "block"; }
+    function hideError()    { errorBox.style.display = "none"; }
+  </script>
+</body>
+</html>
