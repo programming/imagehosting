@@ -178,14 +178,14 @@
       padding: 0.6rem 0.8rem;
     }
 
-    /* Status bar */
-    #status-bar {
-      margin-top: 1.5rem;
-      font-size: 0.75rem;
-      color: #444;
+    /* Quota exhausted notice */
+    #quota-notice {
+      display: none;
+      margin-top: 1rem;
+      font-size: 0.82rem;
+      color: #888;
       text-align: center;
     }
-    #status-bar span { color: #666; }
   </style>
 </head>
 <body>
@@ -222,7 +222,7 @@
     </div>
   </div>
 
-  <div id="status-bar">Loading quota&hellip;</div>
+  <div id="quota-notice">Uploads are full for today &mdash; try again tomorrow.</div>
 
   <script>
     const API = "https://image-host.singapore.workers.dev";
@@ -238,9 +238,10 @@
     const resultUrl  = document.getElementById("result-url");
     const copyBtn    = document.getElementById("copy-btn");
     const resultMeta = document.getElementById("result-meta");
-    const statusBar  = document.getElementById("status-bar");
+    const quotaNotice = document.getElementById("quota-notice");
 
-    let selectedFile = null;
+    let selectedFile  = null;
+    let quotaExhausted = false;
 
     // ── File selection ──────────────────────────────────────────────────────
 
@@ -263,7 +264,7 @@
       fileName.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
       preview.src = URL.createObjectURL(file);
       preview.style.display = "block";
-      uploadBtn.disabled = false;
+      if (!quotaExhausted) uploadBtn.disabled = false;
       hideError();
       result.style.display = "none";
     }
@@ -303,7 +304,7 @@
       } catch (err) {
         showError("Network error — is the worker reachable?");
       } finally {
-        uploadBtn.disabled = false;
+        if (!quotaExhausted) uploadBtn.disabled = false;
         uploadBtn.textContent = "Upload";
       }
     });
@@ -317,17 +318,18 @@
       });
     });
 
-    // ── Status bar ──────────────────────────────────────────────────────────
+    // ── Quota check ─────────────────────────────────────────────────────────
 
     async function refreshStatus() {
       try {
         const res  = await fetch(`${API}/`);
         const data = await res.json();
-        statusBar.innerHTML =
-          `<span>${data.uploadsRemaining}</span> of <span>${data.dailyLimit}</span> uploads remaining today &mdash; resets at midnight UTC`;
-      } catch {
-        statusBar.textContent = "Could not load quota";
-      }
+        if (data.uploadsRemaining === 0) {
+          quotaExhausted = true;
+          uploadBtn.disabled = true;
+          quotaNotice.style.display = "block";
+        }
+      } catch { /* silent — don't block the UI */ }
     }
 
     refreshStatus();
