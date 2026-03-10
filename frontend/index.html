@@ -73,12 +73,31 @@
       margin-top: 1rem;
       border: 1px solid #e8e8e8;
     }
+    #file-row {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
     #file-name {
+      flex: 1;
       font-size: 0.8rem;
       color: #777;
-      margin-top: 0.5rem;
       word-break: break-all;
     }
+    #clear-btn {
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      color: #bbb;
+      font-size: 1rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0.1rem 0.2rem;
+      border-radius: 4px;
+      transition: color 0.15s;
+    }
+    #clear-btn:hover { color: #888; }
 
     /* Options */
     .options {
@@ -299,7 +318,10 @@
     </div>
 
     <img id="preview" alt="preview" />
-    <div id="file-name"></div>
+    <div id="file-row">
+      <div id="file-name"></div>
+      <button id="clear-btn" title="Remove">&#x2715;</button>
+    </div>
 
     <div class="options">
       <input type="checkbox" id="burn-toggle" />
@@ -367,7 +389,9 @@
     const dropZone   = document.getElementById("drop-zone");
     const fileInput  = document.getElementById("file-input");
     const preview    = document.getElementById("preview");
+    const fileRow    = document.getElementById("file-row");
     const fileName   = document.getElementById("file-name");
+    const clearBtn   = document.getElementById("clear-btn");
     const burnToggle = document.getElementById("burn-toggle");
     const uploadBtn  = document.getElementById("upload-btn");
     const errorBox   = document.getElementById("error");
@@ -401,10 +425,25 @@
       fileName.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
       preview.src = URL.createObjectURL(file);
       preview.style.display = "block";
+      fileRow.style.display = "flex";
       if (!quotaExhausted) uploadBtn.disabled = false;
       hideError();
       result.style.display = "none";
     }
+
+    function clearFile() {
+      selectedFile = null;
+      fileInput.value = "";
+      preview.style.display = "none";
+      preview.src = "";
+      fileRow.style.display = "none";
+      fileName.textContent = "";
+      uploadBtn.disabled = true;
+      hideError();
+      result.style.display = "none";
+    }
+
+    clearBtn.addEventListener("click", clearFile);
 
     // ── Upload ──────────────────────────────────────────────────────────────
 
