@@ -30,7 +30,3 @@ crons = ["0 * * * *"]
 [[routes]]
 pattern = "api.imagehost.ing/*"
 zone_name = "imagehost.ing"
-
-[[routes]]
-pattern = "imagehost.ing/image/*"
-zone_name = "imagehost.ing"

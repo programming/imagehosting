@@ -38,7 +38,7 @@ curl -X POST https://api.imagehost.ing/upload \
 ```json
 {
   "id": "abc123...",
-  "url": "https://imagehost.ing/image/abc123....jpg",
+  "url": "https://imagehost.ing/abc123....jpg",
   "burnOnRead": false,
   "expiresAt": "2024-01-17T10:30:00.000Z",
   "sizeBytes": 204800
@@ -59,8 +59,8 @@ curl -X POST https://api.imagehost.ing/upload \
 ### Fetch an image
 
 ```
-GET /image/:id
-GET /image/:id.jpg
+GET https://imagehost.ing/:id
+GET https://imagehost.ing/:id.jpg
 ```
 
 Returns the raw image. If `burnOnRead` was set on upload, the image is permanently deleted after this request. Subsequent requests return `410 Gone`.
