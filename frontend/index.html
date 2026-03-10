@@ -318,12 +318,12 @@
 
   <div class="api-section">
     <h2>API</h2>
-    <div class="api-base">Base URL &nbsp;<span>https://image-host.singapore.workers.dev</span></div>
+    <div class="api-base">Base URL &nbsp;<span>https://api.imagehost.ing</span></div>
 
     <div class="snippet">
       <div class="snippet-label">Check quota</div>
       <div class="snippet-row">
-        <code>curl https://image-host.singapore.workers.dev/</code>
+        <code>curl https://api.imagehost.ing/</code>
         <button class="snippet-copy">Copy</button>
       </div>
     </div>
@@ -331,7 +331,7 @@
     <div class="snippet">
       <div class="snippet-label">Upload an image</div>
       <div class="snippet-row">
-        <code>curl -X POST https://image-host.singapore.workers.dev/upload \
+        <code>curl -X POST https://api.imagehost.ing/upload \
   -F "file=@photo.jpg"</code>
         <button class="snippet-copy">Copy</button>
       </div>
@@ -340,7 +340,7 @@
     <div class="snippet">
       <div class="snippet-label">Upload &amp; burn after reading</div>
       <div class="snippet-row">
-        <code>curl -X POST https://image-host.singapore.workers.dev/upload \
+        <code>curl -X POST https://api.imagehost.ing/upload \
   -F "file=@photo.jpg" \
   -F "burn=true"</code>
         <button class="snippet-copy">Copy</button>
@@ -355,7 +355,7 @@
   </div>
 
   <script>
-    const API = "https://image-host.singapore.workers.dev";
+    const API = "https://api.imagehost.ing";
 
     const dropZone   = document.getElementById("drop-zone");
     const fileInput  = document.getElementById("file-input");
