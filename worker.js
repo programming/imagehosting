@@ -146,7 +146,7 @@ async function handleUpload(request, env) {
   });
 
   const ext = { "image/jpeg": "jpg", "image/png": "png", "image/gif": "gif", "image/webp": "webp" }[file.type] ?? "";
-  const imageUrl = `${new URL(request.url).origin}/image/${id}${ext ? "." + ext : ""}`;
+  const imageUrl = `https://www.imagehost.ing/image/${id}${ext ? "." + ext : ""}`;
 
   return json({
     id,

@@ -26,7 +26,11 @@ crons = ["0 * * * *"]
 # [vars]
 # UPLOAD_SECRET = ""   ← do NOT put secrets here; use `wrangler secret put`
 
-# ── Custom domain ─────────────────────────────────────────────────────────────
+# ── Custom domains ────────────────────────────────────────────────────────────
 [[routes]]
 pattern = "api.imagehost.ing/*"
+zone_name = "imagehost.ing"
+
+[[routes]]
+pattern = "www.imagehost.ing/image/*"
 zone_name = "imagehost.ing"
