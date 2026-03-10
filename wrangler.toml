@@ -32,5 +32,5 @@ pattern = "api.imagehost.ing/*"
 zone_name = "imagehost.ing"
 
 [[routes]]
-pattern = "www.imagehost.ing/image/*"
+pattern = "imagehost.ing/image/*"
 zone_name = "imagehost.ing"

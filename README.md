@@ -2,7 +2,7 @@
 
 Minimal image hosting with burn-after-reading support. Images expire automatically after 24 hours.
 
-Live at **[www.imagehost.ing](https://www.imagehost.ing)**
+Live at **[imagehost.ing](https://imagehost.ing)**
 
 ---
 
@@ -38,7 +38,7 @@ curl -X POST https://api.imagehost.ing/upload \
 ```json
 {
   "id": "abc123...",
-  "url": "https://www.imagehost.ing/image/abc123....jpg",
+  "url": "https://imagehost.ing/image/abc123....jpg",
   "burnOnRead": false,
   "expiresAt": "2024-01-17T10:30:00.000Z",
   "sizeBytes": 204800
